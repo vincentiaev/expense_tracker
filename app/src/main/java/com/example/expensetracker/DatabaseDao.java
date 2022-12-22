@@ -48,4 +48,7 @@ public interface DatabaseDao {
 
     @Query("UPDATE tbl_keuangan SET keterangan = :keterangan, tanggal = :tgl, jml_uang = :harga WHERE uid = :uid and tipe = 'pemasukan'")
     void updateDataPemasukan(String keterangan, String tgl, int harga, int uid);
+
+    @Query("SELECT SUM(CASE WHEN tipe = 'pemasukan' THEN jml_uang ELSE -jml_uang END) AS saving FROM tbl_keuangan")
+    LiveData<Integer> getTotalSaving();
 }

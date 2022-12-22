@@ -18,6 +18,7 @@ public class IncomeViewModel extends AndroidViewModel {
     private LiveData<List<ModelDatabase>> mPemasukan;
     private DatabaseDao databaseDao;
     private LiveData<Integer> mTotalPrice;
+    private LiveData<Integer> mTotalSaving;
 
     public IncomeViewModel(@NonNull Application application) {
         super(application);
@@ -25,6 +26,7 @@ public class IncomeViewModel extends AndroidViewModel {
         databaseDao = DatabaseClient.getInstance(application).getAppDatabase().databaseDao();
         mPemasukan = databaseDao.getAllPemasukan();
         mTotalPrice = databaseDao.getTotalPemasukan();
+        mTotalSaving = databaseDao.getTotalSaving();
     }
 
     public LiveData<List<ModelDatabase>> getPemasukan() {
@@ -33,6 +35,10 @@ public class IncomeViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getTotalPemasukan() {
         return mTotalPrice;
+    }
+
+    public LiveData<Integer> getTotalSaving() {
+        return mTotalSaving;
     }
 
     public void deleteAllData() {

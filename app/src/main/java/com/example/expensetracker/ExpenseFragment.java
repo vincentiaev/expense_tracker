@@ -1,10 +1,12 @@
 package com.example.expensetracker;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -28,10 +30,11 @@ public class ExpenseFragment extends Fragment implements ExpenseAdapter.Pengelua
     private ExpenseAdapter expenseAdapter;
     private ExpenseViewModel expenseViewModel;
     private List<ModelDatabase> modelDatabase = new ArrayList<>();
-    TextView tv_total, tv_kosong;
+    TextView tv_total, tv_kosong, tv_total_saving;
     Button btn_hapus;
     FloatingActionButton float_add_btn;
     RecyclerView rv_data;
+    LiveData<Integer> mTotalSaving;
 
     public ExpenseFragment() {
     }
@@ -50,6 +53,8 @@ public class ExpenseFragment extends Fragment implements ExpenseAdapter.Pengelua
         btn_hapus = view.findViewById(R.id.btn_delete);
         float_add_btn = view.findViewById(R.id.float_add_btn);
         rv_data = view.findViewById(R.id.rv_data);
+
+        tv_total_saving = view.findViewById(R.id.tv_total_saving);
 
         tv_kosong.setVisibility(View.GONE);
 
@@ -132,6 +137,30 @@ public class ExpenseFragment extends Fragment implements ExpenseAdapter.Pengelua
                         }
                     }
                 });
+
+        expenseViewModel.getTotalSaving().observe(requireActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer == null) {
+                    int totalSaving = 0;
+                    String initPrice = FunctionHelper.rupiahFormat(totalSaving);
+                    tv_total_saving.setText(initPrice);
+                } else {
+                    int totalSaving = integer;
+                    String initPrice = FunctionHelper.rupiahFormat(totalSaving);
+                    tv_total_saving.setText(initPrice);
+                    if (totalSaving < 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#E3242B"));;
+                    }
+                    if (totalSaving > 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#008577"));;
+                    }
+                    if (totalSaving == 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#000000"));
+                    }
+                }
+            }
+        });
     }
 
     @Override

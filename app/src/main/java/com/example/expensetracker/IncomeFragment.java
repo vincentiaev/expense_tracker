@@ -2,6 +2,7 @@ package com.example.expensetracker;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,10 +29,11 @@ public class IncomeFragment extends Fragment implements IncomeAdapter.PemasukanA
     private IncomeAdapter incomeAdapter;
     private IncomeViewModel incomeViewModel;
     private List<ModelDatabase> modelDatabaseList = new ArrayList<>();
-    TextView tvTotal, tvNotFound;
+    TextView tvTotal, tvNotFound, tv_total_saving;
     Button btnHapus;
     FloatingActionButton fabAdd;
     RecyclerView rvListData;
+    LiveData<Integer> mTotalSaving;
 
     public IncomeFragment() {
     }
@@ -49,6 +52,8 @@ public class IncomeFragment extends Fragment implements IncomeAdapter.PemasukanA
         btnHapus = view.findViewById(R.id.btn_delete);
         fabAdd = view.findViewById(R.id.float_add_btn);
         rvListData = view.findViewById(R.id.rv_data);
+
+        tv_total_saving = view.findViewById(R.id.tv_total_saving);
 
         tvNotFound.setVisibility(View.GONE);
 
@@ -98,6 +103,30 @@ public class IncomeFragment extends Fragment implements IncomeAdapter.PemasukanA
                         }
                     }
                 });
+
+        incomeViewModel.getTotalSaving().observe(requireActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer == null) {
+                    int totalSaving = 0;
+                    String initPrice = FunctionHelper.rupiahFormat(totalSaving);
+                    tv_total_saving.setText(initPrice);
+                } else {
+                    int totalSaving = integer;
+                    String initPrice = FunctionHelper.rupiahFormat(totalSaving);
+                    tv_total_saving.setText(initPrice);
+                    if (totalSaving < 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#E3242B"));;
+                    }
+                    if (totalSaving > 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#008577"));;
+                    }
+                    if (totalSaving == 0) {
+                        tv_total_saving.setTextColor(Color.parseColor("#000000"));
+                    }
+                }
+            }
+        });
     }
 
     private void initAction() {

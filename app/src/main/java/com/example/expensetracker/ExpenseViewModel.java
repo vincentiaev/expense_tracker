@@ -18,6 +18,7 @@ public class ExpenseViewModel extends AndroidViewModel {
     private LiveData<List<ModelDatabase>> mPengeluarans;
     private DatabaseDao databaseDao;
     private LiveData<Integer> mTotalPrice;
+    private LiveData<Integer> mTotalSaving;
 
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
@@ -25,6 +26,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         databaseDao = DatabaseClient.getInstance(application).getAppDatabase().databaseDao();
         mPengeluarans = databaseDao.getAllPengeluaran();
         mTotalPrice = databaseDao.getTotalPengeluaran();
+        mTotalSaving = databaseDao.getTotalSaving();
     }
 
     public LiveData<List<ModelDatabase>> getPengeluaran() {
@@ -33,6 +35,10 @@ public class ExpenseViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getTotalPengeluaran() {
         return mTotalPrice;
+    }
+
+    public LiveData<Integer> getTotalSaving() {
+        return mTotalSaving;
     }
 
     public void deleteAllData() {
